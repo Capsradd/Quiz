@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Belajar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+<!-- ===== LANDING ===== -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-card">
+    <h1>Quiz Belajar</h1>
+    <p class="landing-sub">Pilih mode belajar</p>
+    <button id="landing-quiz" class="landing-btn landing-quiz">
+      <span class="landing-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
+      <span class="landing-label">Quiz</span>
+      <span class="landing-desc">Jawab soal pilihan ganda dengan feedback langsung</span>
+    </button>
+    <button id="landing-flashcard" class="landing-btn landing-flash">
+      <span class="landing-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </span>
+      <span class="landing-label">Flashcard</span>
+      <span class="landing-desc">Belajar dengan kartu flip untuk menghafal</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== HOME (JSON paste) ===== -->
+<div id="screen-home" class="screen">
+  <div class="home-header">
+    <button id="home-back" class="home-back-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Kembali
+    </button>
+  </div>
+  <div class="home-card">
+    <h1 id="home-title">Quiz Belajar</h1>
+    <p class="subtitle" id="home-subtitle">Paste JSON soal atau upload file .json</p>
+    <textarea id="json-input" placeholder="Paste JSON di sini..."></textarea>
+    <div class="action-row">
+      <label class="upload-label">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3m0 0L5 6m3-3l3 3"/><path d="M2 10v2a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+        Upload .json
+        <input type="file" id="file-input" accept=".json" hidden>
+      </label>
+      <button id="copy-btn" class="copy-btn">Copy Contoh</button>
+      <button id="copy-prompt-btn" class="copy-btn">Copy Contoh with Prompt</button>
+    </div>
+    <button id="load-btn" class="btn-primary">Load</button>
+    <div id="error-msg" class="error-msg hidden"></div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <span class="quiz-title" id="quiz-title">Quiz</span>
+      <div class="header-actions">
+        <button id="share-btn" class="icon-btn" title="Share">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="10" x2="18" y2="3"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="3" r="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button id="close-btn" class="icon-btn close-btn" title="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="quiz-body">
+      <div class="progress-section">
+        <div class="progress-bar" id="progress-bar"></div>
+        <span class="progress-text" id="progress-text">0 / 0</span>
+      </div>
+      <div class="question-section">
+        <span class="question-num" id="question-num">Question 1</span>
+        <p class="question-text" id="question-text"></p>
+      </div>
+      <div class="options" id="options-container"></div>
+      <div id="hint-area" class="hint-area hidden">
+        <button id="hint-toggle" class="hint-toggle-btn">+ Show Hint</button>
+        <div id="hint-text" class="hint-text hidden"></div>
+      </div>
+    </div>
+    <div class="quiz-footer">
+      <button id="back-btn" class="btn btn-back" disabled>Back</button>
+      <button id="next-btn" class="btn btn-next" disabled>Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULT (shared: quiz + flashcard) ===== -->
+<div id="screen-result" class="screen">
+  <div class="result-card">
+    <h2 id="result-title">Selesai!</h2>
+    <p class="result-sub" id="result-sub">Skor kamu</p>
+    <p id="result-score" class="result-score">0 / 0</p>
+    <p id="result-pct" class="result-pct"></p>
+    <div class="result-actions">
+      <button id="redo-btn" class="btn btn-redo">Ulang</button>
+      <button id="menu-btn" class="btn btn-menu">Menu</button>
+      <button id="change-btn" class="btn btn-change">Ganti Soal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FLASHCARD ===== -->
+<div id="screen-flashcard" class="screen">
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <span class="quiz-title" id="fc-title">Flashcard</span>
+      <div class="header-actions">
+        <button id="fc-share" class="icon-btn" title="Share">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="10" x2="18" y2="3"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="3" r="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button id="fc-close" class="icon-btn close-btn" title="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="quiz-body">
+      <div class="progress-section">
+        <div class="progress-bar" id="fc-progress-bar"></div>
+        <span class="progress-text" id="fc-progress-text">0 / 0</span>
+      </div>
+      <div class="fc-scene">
+        <div class="fc-card" id="fc-card">
+          <div class="fc-face fc-front">
+            <p class="fc-question" id="fc-question"></p>
+            <p class="fc-tap">Tap untuk lihat jawaban</p>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-answer" id="fc-answer"></div>
+            <div class="fc-explanation" id="fc-explanation"></div>
+            <p class="fc-tap">Tap untuk kembali</p>
+          </div>
+        </div>
+      </div>
+      <div class="fc-hint-area hidden" id="fc-hint-area">
+        <button id="fc-hint-toggle" class="hint-toggle-btn">+ Show Hint</button>
+        <div id="fc-hint-text" class="hint-text hidden"></div>
+      </div>
+    </div>
+    <div class="quiz-footer">
+      <button id="fc-back" class="btn btn-back" disabled>Back</button>
+      <button id="fc-next" class="btn btn-next">Next</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
