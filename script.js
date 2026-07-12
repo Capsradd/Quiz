@@ -381,6 +381,7 @@
     state.answered={};
     state._results=[];
     lastJson='';
+    jsonInput.value='';
   });
 
   fileInput.addEventListener('change',function(){
